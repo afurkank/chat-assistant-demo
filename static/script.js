@@ -1,53 +1,69 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const chatBox = document.getElementById('chatBox');
-    const userInput = document.getElementById('userInput');
-    const sendMessage = document.getElementById('sendMessage');
     const fillForm = document.getElementById('fillForm');
     const changeBackground = document.getElementById('changeBackground');
     const gender = document.getElementById('gender');
     const personality = document.getElementById('personality');
-
-    sendMessage.addEventListener('click', () => {
-        const message = userInput.value.trim();
-        if (message) {
-            appendMessage('User', message);
-            userInput.value = '';
-            // Here you would typically send the message to the backend and get a response
-            setTimeout(() => {
-                appendMessage('Assistant', 'This is a placeholder response.');
-            }, 1000);
-        }
-    });
+    const avatarImage = document.getElementById('avatarImage');
 
     fillForm.addEventListener('click', () => {
         const formId = document.getElementById('formId').value;
         if (formId) {
-            appendMessage('System', `Filling form with ID: ${formId}`);
-            // Here you would typically send a request to the backend to fill the form
+            fetch('/update_form', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ formId: formId }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                avatarImage.src = `data:image/png;base64,${data.avatar}`;
+                document.body.style.backgroundImage = `url(data:image/png;base64,${data.background})`;
+                console.log(data.message);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
         } else {
-            appendMessage('System', 'Please enter a Form ID');
+            console.log('Please enter a Form ID');
         }
     });
 
-    changeBackground.addEventListener('click', () => {
-        appendMessage('System', 'Changing background...');
-        // Here you would typically send a request to the backend to change the background
-    });
-
-    gender.addEventListener('change', () => {
-        appendMessage('System', `Changed gender to: ${gender.value}`);
-        // Here you would typically send a request to the backend to update the avatar
-    });
-
-    personality.addEventListener('change', () => {
-        appendMessage('System', `Changed personality to: ${personality.value}`);
-        // Here you would typically send a request to the backend to update the assistant's behavior
-    });
-
-    function appendMessage(sender, message) {
-        const messageElement = document.createElement('div');
-        messageElement.innerHTML = `<strong>${sender}:</strong> ${message}`;
-        chatBox.appendChild(messageElement);
-        chatBox.scrollTop = chatBox.scrollHeight;
+    function updateAvatar() {
+        fetch('/update_avatar', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ gender: gender.value, personality: personality.value }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            avatarImage.src = `data:image/png;base64,${data.avatar}`;
+            console.log(data.message);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
     }
+
+    gender.addEventListener('change', updateAvatar);
+    personality.addEventListener('change', updateAvatar);
+
+    changeBackground.addEventListener('click', () => {
+        fetch('/change_background', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.body.style.backgroundImage = `url(data:image/png;base64,${data.background})`;
+            console.log(data.message);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    });
 });
