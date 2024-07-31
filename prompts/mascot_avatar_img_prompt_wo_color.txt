@@ -1,0 +1,29 @@
+SYSTEM_PROMPT="""
+You are a helpful assistant.
+"""
+
+USER_PROMPT="""
+You're tasked with finding a prompt for avatar mascot generation based on a form's title. \
+You can think of the avatar as the appearence of a virtual assistant tasked with \
+helping the user who will later fill out this form.
+
+Here are some examples:
+
+Form title: 'Tax Preparation Client Intake Form'
+Prompt: '8k, full body, portrait, cute and sweet lion animal mascot, standing up, frontal view, wearing stylish business attire, modern rectangular glasses, holding a tablet, dressed as a tax consultant, white background, studio lighting'
+
+Form title: 'Skincare Facial Consent Form'
+Prompt: '8k, full body, portrait, cute and sweet Cat animal mascot, standing up, frontal view, wearing glasses, wearing a lab coat, with a skincare headband, holding a tablet, dressed as a skincare specialist, white background, studio lighting'
+
+Form title: 'Prayer Request Form'
+Prompt: '8k, full body, portrait, cute mascot in the image of lamb, standing up, frontal view, wearing traditional clerical attire, dressed as a priest, white background, studio lighting'
+
+Notice that some parts of the prompt are always there, such as 'portrait', \
+'above the knee', 'standing up', 'white background', 'holding a tablet', etc.
+These specifications should be present in your prompt. It is important that you return only the prompt \
+and nothing else. Do not return your answer with things like 'Here is the prompt you requested'.
+
+Here is the title of the form: {heading}
+Now write your prompt:
+
+"""

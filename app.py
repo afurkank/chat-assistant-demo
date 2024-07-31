@@ -1,14 +1,16 @@
 from flask import Flask, render_template, request, jsonify
 import os
 import base64
+import requests
 
 from utils.prompt_constructor import get_prompt_for_image_gen
 from utils.local_img_generation import generate_img
 from utils.remove_bg import get_bg_removed_img
-from utils.log_image import log_image
 from utils.jotform_api import get_title, get_logo_url
 
 app = Flask(__name__)
+
+IMG_MODEL = "sd_xl_turbo_1.0_fp16"
 
 @app.route('/')
 def index():
@@ -16,59 +18,81 @@ def index():
 
 @app.route('/update_form', methods=['POST'])
 def update_form():
-    form_id = request.json['formId']
-    
-    avatar_img_generation_prompt = get_prompt_for_image_gen(prompt_file_path="prompts/avatar_img_prompt.txt", 
+    gender = request.json['gender']
+    form_id = request.json['formID']
+
+    avatar_img_generation_prompt = get_prompt_for_image_gen(prompt_file_path=f"prompts/{gender}_avatar_img_prompt_wo_color.txt", 
                                       form_id=form_id,
                                       model='gpt-3.5-turbo')
     
-    background_img_generation_prompt = get_prompt_for_image_gen(prompt_file_path="prompts/background_img_prompt_wo_color.txt", 
+    background_img_generation_prompt = get_prompt_for_image_gen(prompt_file_path="prompts/background_img_prompt.txt", 
                                       form_id=form_id,
                                       model='gpt-3.5-turbo')
 
-    avatar_image_bytes, _ = generate_img(img_model="Juggernaut_RunDiffusionPhoto2_Lightning_4Steps",
+    avatar_image_bytes, _ = generate_img(img_model=IMG_MODEL,
                  prompt=avatar_img_generation_prompt,
                  negative_prompt='')
     
-    background_image_bytes, _ = generate_img(img_model="Juggernaut_RunDiffusionPhoto2_Lightning_4Steps",
+    bg_removed_avatar_img_bytes = get_bg_removed_img(avatar_image_bytes)
+    
+    background_image_bytes, _ = generate_img(img_model=IMG_MODEL,
                  prompt=background_img_generation_prompt,
                  negative_prompt='')
     
-    avatar_base64 = base64.b64encode(avatar_image_bytes).decode('utf-8')
+    avatar_base64 = base64.b64encode(bg_removed_avatar_img_bytes).decode('utf-8')
     background_base64 = base64.b64encode(background_image_bytes).decode('utf-8')
+
+    # Get title and logo URL
+    title = get_title(form_id)
+    logo_url = get_logo_url(form_id)
+
+    # Fetch logo image and convert to base64
+    logo_response = requests.get(logo_url)
+    logo_base64 = base64.b64encode(logo_response.content).decode('utf-8')
 
     return jsonify({
         'message': f'Form {form_id} updated successfully',
         'avatar': avatar_base64,
-        'background': background_base64
+        'background': background_base64,
+        'title': title,
+        'logo': logo_base64
     })
 
 @app.route('/update_avatar', methods=['POST'])
 def update_avatar():
     gender = request.json['gender']
-    personality = request.json['personality']
+    form_id = request.json['formID']
+    # personality = request.json['personality']
     
-    prompt = f"Generate an avatar of a {gender} with a {personality} personality"
-    if gender == 'mascot':
-        prompt = f"Generate a mascot character with a {personality} personality"
+    avatar_img_generation_prompt = get_prompt_for_image_gen(
+        prompt_file_path=f"prompts/{gender}_avatar_img_prompt_wo_color.txt", 
+        form_id=form_id,
+        model='gpt-3.5-turbo')
 
-    avatar_image_bytes, _ = generate_img(img_model="Juggernaut_RunDiffusionPhoto2_Lightning_4Steps",
-                 prompt=prompt,
+    avatar_image_bytes, _ = generate_img(img_model=IMG_MODEL,
+                 prompt=avatar_img_generation_prompt,
                  negative_prompt='')
+    
+    bg_removed_avatar_img_bytes = get_bg_removed_img(avatar_image_bytes)
 
-    avatar_base64 = base64.b64encode(avatar_image_bytes).decode('utf-8')
+    avatar_base64 = base64.b64encode(bg_removed_avatar_img_bytes).decode('utf-8')
 
     return jsonify({
-        'message': f'Avatar updated to {gender} with {personality} personality',
+        'message': f'Avatar updated to {gender}.',
         'avatar': avatar_base64
     })
 
 @app.route('/change_background', methods=['POST'])
 def change_background():
-    prompt = "Generate a random background image"
+    form_id = request.json['formID']
 
-    background_image_bytes, _ = generate_img(img_model="Juggernaut_RunDiffusionPhoto2_Lightning_4Steps",
-                 prompt=prompt,
+    background_img_generation_prompt = get_prompt_for_image_gen(
+        prompt_file_path="prompts/background_img_prompt.txt", 
+        form_id=form_id,
+        model='gpt-3.5-turbo')
+
+    background_image_bytes, _ = generate_img(img_model=IMG_MODEL,
+                 prompt=background_img_generation_prompt,
                  negative_prompt='')
 
     background_base64 = base64.b64encode(background_image_bytes).decode('utf-8')

@@ -47,7 +47,7 @@ def generate_img(
         "scheduler": kwargs.get('schedule_type', 'Karras'),
         "batch_size": kwargs.get('batch_size', 1),
         "n_iter": kwargs.get('batch_count', 1), # ToDo: This may not be related to batch count
-        "steps": kwargs.get('sampling_steps', 6),
+        "steps": kwargs.get('sampling_steps', 1),
         "cfg_scale": kwargs.get('cfg_scale', 1.5),
         "width": kwargs.get('width', 768),
         "height": kwargs.get('height', 1344),
