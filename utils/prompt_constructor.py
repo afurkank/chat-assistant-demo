@@ -52,7 +52,7 @@ def get_prompt_for_image_gen(
         colors_json = json.loads(colors)
         colors_string = ", ".join(colors_json.values())
 
-        logging.info(f"Color descriptions of logo: {colors_string}")
+        #logging.info(f"Color descriptions of logo: {colors_string}")
 
         # Read pre-defined prompt
         # either 'avatar image' or 'background image' prompt file can be used here

@@ -1,10 +1,10 @@
 import os
 import logging
-from dotenv import load_dotenv
-from typing import Literal
 
 from groq import Groq
 from openai import OpenAI
+from typing import Literal
+from dotenv import load_dotenv
 
 # Load the .env file
 load_dotenv()

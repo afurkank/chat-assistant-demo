@@ -172,7 +172,7 @@ def get_logo_color_palette(logo_url: str):
     num_colors_to_pick = min(len(colors), 3) # make sure we are not out of bounds
     colors = colors[:num_colors_to_pick]
 
-    logging.info(f"Colors extracted from the logo: {colors}")
+    #logging.info(f"Colors extracted from the logo: {colors}")
 
     return colors
 

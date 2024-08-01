@@ -1,9 +1,19 @@
-import logging
+import os
 import base64
+import logging
 import requests
+
 from typing import Tuple
+from dotenv import load_dotenv
 
 logging.basicConfig(level=logging.INFO)
+
+load_dotenv()
+
+try:
+    IMG_GEN_ENDPOINT_URL=os.getenv("IMG_GEN_ENDPOINT_URL")
+except ValueError as e:
+    logging.info(str(e))
 
 def generate_img(
         img_model: str,
@@ -17,8 +27,6 @@ def generate_img(
 
     Returns a tuple of image bytes and generation info.
     """
-
-    url = "http://127.0.0.1:7860"
 
     # Check for Lora
     use_detailed_hands_lora = kwargs.get('use_detailed_hands_lora', False)
@@ -47,17 +55,17 @@ def generate_img(
         "scheduler": kwargs.get('schedule_type', 'Karras'),
         "batch_size": kwargs.get('batch_size', 1),
         "n_iter": kwargs.get('batch_count', 1), # ToDo: This may not be related to batch count
-        "steps": kwargs.get('sampling_steps', 1),
-        "cfg_scale": kwargs.get('cfg_scale', 1.5),
-        "width": kwargs.get('width', 768),
-        "height": kwargs.get('height', 1344),
+        "steps": kwargs.get('sampling_steps', 6),
+        "cfg_scale": kwargs.get('cfg_scale', 2),
+        "width": kwargs.get('width', 832),
+        "height": kwargs.get('height', 1216),
         "override_settings": {
             "sd_model_checkpoint": img_model
         },
     }
-    logging.info(f"Payload: {payload}")
+    logging.info("\n"+"-"*40+f"\nPayload: {payload}\n"+"-"*40)
 
-    response = requests.post(url=f'{url}/sdapi/v1/txt2img', json=payload)
+    response = requests.post(url=f'{IMG_GEN_ENDPOINT_URL}/sdapi/v1/txt2img', json=payload)
 
     r = response.json()
 
