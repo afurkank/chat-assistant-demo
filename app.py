@@ -12,7 +12,9 @@ from utils.jotform_api import get_title, get_logo_url
 
 app = Flask(__name__)
 
-IMG_MODEL = "Juggernaut_RunDiffusionPhoto2_Lightning_4Steps"
+AVATAR_IMG_MODEL = "Juggernaut_RunDiffusionPhoto2_Lightning_4Steps"
+BACKGROUND_IMG_MODEL = "Juggernaut_RunDiffusionPhoto2_Lightning_4Steps"
+LLM_MODEL = "gpt-3.5-turbo"
 
 @app.route('/')
 def index():
@@ -37,7 +39,7 @@ def update_form_info():
         logo_data = base64.b64encode(logo_response.content).decode('utf-8')
         logo_type = content_type.split('/')[-1]  # e.g., 'png', 'jpeg'
 
-    logging.info("\n"+"#"*40+f"\nLogo and title has been changed\n"+"#"*40)
+    logging.info("\n"+"-"*40+f"\nLogo and title has been changed\n"+"-"*40)
 
     return jsonify({
         'title': title,
@@ -55,13 +57,16 @@ def update_avatar():
     avatar_img_generation_prompt = get_prompt_for_image_gen(
         prompt_file_path=f"prompts/{gender}_avatar_img_prompt_wo_color.txt", 
         form_id=form_id,
-        model='gpt-3.5-turbo')
+        model=LLM_MODEL)
     end0 = time()
     logging.info("\n"+"#"*40+f"\nPrompt for avatar took {(end0 - start):.2f} seconds\n"+"#"*40)
 
-    avatar_image_bytes, _ = generate_img(img_model=IMG_MODEL,
+    kwargs = {'width': 832, 'height': 1216}
+
+    avatar_image_bytes, _ = generate_img(img_model=AVATAR_IMG_MODEL,
                  prompt=avatar_img_generation_prompt,
-                 negative_prompt='')
+                 negative_prompt='naked, nude, cgi, 3D, low quality, ugly, deformed, disfigured',
+                 **kwargs)
     end1 = time()
     logging.info("\n"+"#"*40+f"\nAvatar image generation took {(end1 - end0):.2f} seconds\n"+"#"*40)
     
@@ -86,23 +91,21 @@ def change_background():
     background_img_generation_prompt = get_prompt_for_image_gen(
         prompt_file_path="prompts/background_img_prompt.txt", 
         form_id=form_id,
-        model='gpt-3.5-turbo')
+        model=LLM_MODEL)
     end0 = time()
-    logging.info("\n"+"#"*40+f"\nPrompt for background took {(end0 - start):.2f} seconds\n"+"#"*40)
+    logging.info("\n"+"="*40+f"\nPrompt for background took {(end0 - start):.2f} seconds\n"+"="*40)
     
-    kwargs = {'width': 1728, 'height': 576}
+    kwargs = {'width': 1024, 'height': 1024}
 
-    background_image_bytes, _ = generate_img(img_model=IMG_MODEL,
-                 prompt=background_img_generation_prompt,
-                 negative_prompt='', **kwargs)
+    background_image_bytes, _ = generate_img(img_model=BACKGROUND_IMG_MODEL,
+                 prompt="8k, high quality, best quality, "+background_img_generation_prompt,
+                 negative_prompt='person, people, human body, naked, nude, human, animal, text, digit, number, words, low quality, ugly, deformed, cgi', **kwargs)
     end1 = time()
-    logging.info("\n"+"#"*40+f"\nBackground image generation took {(end1 - end0):.2f} seconds\n"+"#"*40)
+    logging.info("\n"+"="*40+f"\nBackground image generation took {(end1 - end0):.2f} seconds\n"+"="*40)
 
     background_base64 = base64.b64encode(background_image_bytes).decode('utf-8')
-    end2 = time()
-    logging.info("\n"+"#"*40+f"\nEncoding avatar image bytes took {(end2 - end1):.2f} seconds\n"+"#"*40)
 
-    logging.info("\n"+"#"*40+f"\nTotal time: {(end2 - start):.2f} seconds\n"+"#"*40)
+    logging.info("\n"+"="*40+f"\nTotal time: {(end1 - start):.2f} seconds\n"+"="*40)
 
     return jsonify({
         'message': 'Background changed successfully',

@@ -56,7 +56,7 @@ def generate_img(
         "batch_size": kwargs.get('batch_size', 1),
         "n_iter": kwargs.get('batch_count', 1), # ToDo: This may not be related to batch count
         "steps": kwargs.get('sampling_steps', 6),
-        "cfg_scale": kwargs.get('cfg_scale', 2),
+        "cfg_scale": kwargs.get('cfg_scale', 1.5),
         "width": kwargs.get('width', 832),
         "height": kwargs.get('height', 1216),
         "override_settings": {

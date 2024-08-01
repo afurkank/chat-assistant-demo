@@ -97,7 +97,11 @@ def get_title(form_id: int):
         # Request failed
         logging.info(f"Request failed with status code: {response.status_code}")
         logging.info(response.text)
-
-    title = next(iter(answers.items()))[1]['text']
-
-    return title
+    title = None
+    for _, info_dict in answers.items():
+        if info_dict.get('headerType') is not None:
+            if info_dict.get('headerType') == 'Large':
+                title = info_dict.get('text')
+    if title:
+        return title
+    return None

@@ -47,7 +47,8 @@ def get_prompt_for_image_gen(
     heading = get_title(form_id=form_id)
 
     # Get colors of the logo
-    colors = get_structured_color_descriptions(form_id=form_id, prompt_file_path="prompts/color_palette_prompt.txt")
+    #colors = get_structured_color_descriptions(form_id=form_id, prompt_file_path="prompts/color_palette_prompt.txt")
+    colors=None # we do not use colors for now
     if colors:
         colors_json = json.loads(colors)
         colors_string = ", ".join(colors_json.values())
@@ -61,7 +62,9 @@ def get_prompt_for_image_gen(
         # logo form doesn't exist, so we cannot extract colors
         # we read the prompt that doesn't require colors as input
         prompt_file_name = prompt_file_path.split('.')[0]
-        new_file_path = prompt_file_name + '_wo_color' + '.txt'
+        if '_wo_color' not in prompt_file_name:
+            prompt_file_name = prompt_file_name + '_wo_color'
+        new_file_path = prompt_file_name + '.txt'
         system_prompt, user_prompt = read_prompts_from_file(file_path=new_file_path, heading=heading, len=len)
 
     # Get prompt via LLM for image generation
