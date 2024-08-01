@@ -10,23 +10,60 @@ document.addEventListener('DOMContentLoaded', () => {
     fillForm.addEventListener('click', () => {
         const formId = document.getElementById('formId').value;
         if (formId) {
-            fetch('/update_form', {
+            // Update form info (logo and title) immediately
+            fetch('/update_form_info', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ gender: gender.value, formID: formId }),
+                body: JSON.stringify({ formID: formId }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                formTitle.textContent = data.title;
+                
+                if (data.logoType === 'svg+xml') {
+                    // For SVG, set the innerHTML directly
+                    formLogo.innerHTML = data.logo;
+                } else {
+                    // For other image types, use base64 encoding
+                    formLogo.src = `data:image/${data.logoType};base64,${data.logo}`;
+                }
+            })
+            .catch((error) => {
+                console.error('Error updating form info:', error);
+            });
+
+            // Update background
+            fetch('/update_background', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ formID: formId }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.body.style.backgroundImage = `url(data:image/png;base64,${data.background})`;
+            })
+            .catch((error) => {
+                console.error('Error updating background:', error);
+            });
+
+            // Update avatar
+            fetch('/update_avatar', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ formID: formId, gender: gender.value}),
             })
             .then(response => response.json())
             .then(data => {
                 avatarImage.src = `data:image/png;base64,${data.avatar}`;
-                document.body.style.backgroundImage = `url(data:image/png;base64,${data.background})`;
-                formLogo.src = `data:image/png;base64,${data.logo}`;
-                formTitle.textContent = data.title;
-                console.log(data.message);
             })
             .catch((error) => {
-                console.error('Error:', error);
+                console.error('Error updating avatar:', error);
             });
         } else {
             console.log('Please enter a Form ID');
@@ -40,12 +77,11 @@ document.addEventListener('DOMContentLoaded', () => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ gender: gender.value, formID: formId }),
+            body: JSON.stringify({ formID: formId, gender: gender.value }),
         })
         .then(response => response.json())
         .then(data => {
             avatarImage.src = `data:image/png;base64,${data.avatar}`;
-            console.log(data.message);
         })
         .catch((error) => {
             console.error('Error:', error);
@@ -57,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     changeBackground.addEventListener('click', () => {
         const formId = document.getElementById('formId').value;
-        fetch('/change_background', {
+        fetch('/update_background', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -67,7 +103,6 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(response => response.json())
         .then(data => {
             document.body.style.backgroundImage = `url(data:image/png;base64,${data.background})`;
-            console.log(data.message);
         })
         .catch((error) => {
             console.error('Error:', error);
