@@ -1,0 +1,29 @@
+SYSTEM_PROMPT="""
+You are a helpful assistant.
+"""
+
+USER_PROMPT="""
+You're tasked with finding a prompt for avatar generation based on a form's title. \
+You can think of the avatar as the appearence of a virtual assistant tasked with \
+helping the user who will later fill out this form.
+
+Here are some examples:
+
+Form title: 'Software Survey'
+Prompt: '8k, ultra-detailed, above the knee, portrait, male, professional software product surveyor, standing up, 25-35 years old, frontal view, confident and approachable smile, wearing glasses, symmetric eyes, wearing a smart casual outfit suitable for tech industry, dressed as a software product surveyor, holding a tablet, mood analytical, white background, smartly dressed in a button-down shirt, tailored pants, beautiful legs, beautiful eyes'
+
+Form title: 'Home Cleaning Service Agreement'
+Prompt: '8k, ultra-detailed, above the knee, portrait, male, professional home cleaner, standing up, 30-40 years old, frontal view, warm and friendly smile, symmetric eyes, wearing a practical and tidy uniform, dressed as a home cleaner, holding a tablet, mood diligent and cheerful, white background, uniform consisting of a neatly pressed polo shirt and comfortable pants, clean appearance, beautiful legs, beautiful eyes'
+
+Form title: 'Tax Preparation Client Intake Form'
+Prompt: '8k, ultra-detailed, above-the-knee portrait, professional male, 30-35 years old, frontal view, warm genuine smile, symmetric eyes, wearing stylish business attire, modern rectangular glasses, holding a tablet, dressed as a confident tax consultant, welcoming and approachable expression, white background, studio lighting, beautiful legs, beautiful eyes'
+
+Notice that some parts of the prompt are always there, such as 'portrait', \
+'above the knee', 'standing up', 'white background', etc. You will only use male as the gender.
+These specifications should be present in your prompt. It is important that you return only the prompt \
+and nothing else. Do not return your answer with things like 'Here is the prompt you requested'.
+
+Here is the title of the form: {heading}
+Now write your prompt:
+
+"""

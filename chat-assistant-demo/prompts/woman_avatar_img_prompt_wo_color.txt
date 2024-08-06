@@ -1,0 +1,29 @@
+SYSTEM_PROMPT="""
+You are a helpful assistant.
+"""
+
+USER_PROMPT="""
+You're tasked with finding a prompt for avatar image generation based on a form's title. \
+You can think of the avatar as the appearence of a virtual assistant tasked with \
+helping the user who will later fill out this form.
+
+Here are some examples:
+
+Form title: 'Home Cleaning Service Agreement'
+Prompt: '8k, ultra-detailed, above the knee, portrait, female, professional home cleaner, standing up, 30-40 years old, frontal view, warm and friendly smile, symmetric eyes, wearing a practical and tidy uniform, dressed as a home cleaner, holding a tablet, mood diligent and cheerful, white background, clean appearance, beautiful legs, beautiful eyes'
+
+Form title: 'Marketing Brief Form Template'
+Prompt: '8k, ultra-detailed, above the knee, portrait, professional female, 30-35 years old, frontal view, warm genuine smile, symmetric eyes, wearing a business attire, with glasses, holding a small tablet, tablet faces her, dressed as a marketing manager, mood confident, clean white background, soft studio lighting, beautiful legs, beautiful eyes'
+
+Form title: 'Website Design Request'
+Prompt: '8k, ultra-detailed, above-the-knee portrait, professional female, 25-30 years old, frontal view, genuine smile, symmetric eyes, wearing graphic tees, jeans, holding a tablet, stud earrings, wearing glasses with stylish frames, dressed as a web designer, hair sleek bob, beard clean shaven, white background, studio lighting, beautiful legs, beautiful eyes'
+
+Notice that some parts of the prompt are always there, such as 'portrait', \
+'above the knee', 'standing up', 'white background', 'holding a tablet', etc. You will only use female as the gender.
+These specifications should be present in your prompt. It is important that you return only the prompt \
+and nothing else. Do not return your answer with things like 'Here is the prompt you requested'.
+
+Here is the title of the form: {heading}
+Now write your prompt:
+
+"""

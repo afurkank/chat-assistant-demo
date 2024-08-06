@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Assistant Form Filler</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+</head>
+<body>
+    <nav>
+        <div class="input-group">
+            <input type="text" id="formId" placeholder="Enter Form ID">
+            <button id="fillForm" class="rounded-button">
+                <i class="fas fa-file-alt"></i> Update Form
+            </button>
+        </div>
+        <div class="center-group">
+            <select id="gender" class="rounded-button">
+                <option value="woman"><i class="fas fa-female"></i> Woman</option>
+                <option value="man"><i class="fas fa-male"></i> Man</option>
+                <option value="mascot"><i class="fas fa-user-astronaut"></i> Mascot</option>
+            </select>
+            <select id="personality" class="rounded-button">
+                <option value="friendly"><i class="fas fa-smile"></i> Friendly</option>
+                <option value="sassy"><i class="fas fa-grin-wink"></i> Sassy</option>
+                <option value="serious"><i class="fas fa-meh"></i> Serious</option>
+            </select>
+            <button id="changeBackground" class="rounded-button">
+                <i class="fas fa-image"></i> Change Background
+            </button>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <div class="chat-container">
+            <div class="chat-header">
+                <img id="formLogo" src="{{ url_for('static', filename='logo_transparent.svg') }}" alt="Logo" class="logo">
+                <h2 id="formTitle">Virtual Assistant</h2>
+            </div>
+            <div class="chat-box" id="chatBox"></div>
+            <div class="chat-input">
+                <input type="text" id="userInput" placeholder="Type your message...">
+                <button id="sendMessage">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+        <div class="avatar-container">
+            <img id="avatarImage" src="{{ url_for('static', filename='bg_removed_avatar.png') }}" alt="Avatar" class="avatar">
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

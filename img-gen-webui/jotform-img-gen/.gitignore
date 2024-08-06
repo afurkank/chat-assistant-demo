@@ -1,0 +1,7 @@
+.env
+*test.py
+*cache*
+*.ipynb
+*.json
+*.png
+todo.txt

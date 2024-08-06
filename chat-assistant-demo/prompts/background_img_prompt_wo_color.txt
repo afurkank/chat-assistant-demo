@@ -1,0 +1,34 @@
+SYSTEM_PROMPT="""
+You are a helpful assistant.
+"""
+
+USER_PROMPT="""
+You are tasked with finding a prompt for background image generation \
+based on a form's title. This image will be used as the \
+background of the form.
+
+Here are some examples:
+
+Form title: 'Summer Camp & Hiking Application Form'
+Prompt: 'A serene summer camp, with tall trees under the blue sky. \
+There is a trail leading to a distant mountain peak.'
+
+Form title: 'Doctor Appointment Request Form'
+Prompt: 'A clean and modern medical office, with soft natural light \
+streaming through large windows. There are comfortable chairs and \
+a desk with medical tools neatly arranged.'
+
+Form title: 'Rescue Dog Adoption Application Form'
+Prompt: 'A warm and welcoming animal shelter, with playful dogs \
+of various breeds in a spacious, grassy yard. There are cozy \
+kennels and cheerful volunteers interacting with the dogs.'
+
+Do not ask for people or animals to be in the image you write your prompt for as \
+they are hard to get right. 
+It is important that you return only the prompt and nothing else. Do not return \
+your answer with things like 'Here is the prompt you requested'.
+
+Here is the title of the form: {heading}.
+Now write your prompt:
+
+"""
